@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إضافة وصفة | وصفاتي العربية</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">وصفاتي العربية</a>
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <div id="auth-links" class="d-flex gap-2">
+          <a href="/login.html" class="btn btn-outline-light btn-sm" style="font-family:Cairo;font-weight:700">تسجيل الدخول</a>
+        </div>
+        <div id="user-menu" class="d-none d-flex align-items-center gap-2">
+          <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" style="font-family:Cairo;font-weight:700"
+                    data-bs-toggle="dropdown">
+              <span id="username-display"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-start">
+              <li><button class="dropdown-item" id="logout-btn" style="font-family:Cairo">تسجيل الخروج</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Form -->
+  <main class="add-page">
+    <h1 style="font-size:1.9rem;font-weight:900;margin-bottom:.4rem">إضافة وصفة جديدة</h1>
+    <p style="color:var(--muted);margin-bottom:2rem">شارك الجميع وصفتك الأصيلة</p>
+
+    <div id="error-msg" class="error-msg mb-4 d-none"></div>
+
+    <form id="add-recipe-form" novalidate>
+
+      <!-- Basic Info -->
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:1.5rem">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;color:var(--primary)">المعلومات الأساسية</h3>
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label" for="title">اسم الوصفة *</label>
+            <input type="text" class="form-control" id="title" placeholder="مثال: كبسة لحم سعودية" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="description">وصف الوصفة *</label>
+            <textarea class="form-control" id="description" rows="3" placeholder="اكتب وصفاً شهياً يشوّق القارئ..." required></textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="country">البلد *</label>
+            <select class="form-control" id="country" required>
+              <option value="">اختر البلد</option>
+              <option>السعودية</option>
+              <option>مصر</option>
+              <option>لبنان</option>
+              <option>المغرب</option>
+              <option>العراق</option>
+              <option>اليمن</option>
+              <option>سوريا</option>
+              <option>الأردن</option>
+              <option>تونس</option>
+              <option>الجزائر</option>
+              <option>فلسطين</option>
+              <option>الكويت</option>
+              <option>الإمارات</option>
+              <option>البحرين</option>
+              <option>قطر</option>
+              <option>عُمان</option>
+              <option>ليبيا</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="category">التصنيف</label>
+            <select class="form-control" id="category">
+              <option>أطباق رئيسية</option>
+              <option>مقبلات</option>
+              <option>حلويات</option>
+              <option>شوربات</option>
+              <option>سلطات</option>
+              <option>مشروبات</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="cookTime">وقت التحضير (دقيقة)</label>
+            <input type="number" class="form-control" id="cookTime" placeholder="60" min="1">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="servings">عدد الأشخاص</label>
+            <input type="number" class="form-control" id="servings" placeholder="4" min="1">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label" for="image">رابط صورة الوصفة</label>
+            <input type="url" class="form-control" id="image" placeholder="https://...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingredients -->
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:1.5rem">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;color:var(--primary)">المكونات</h3>
+        <div id="ingredients-container">
+          <div class="d-flex gap-2 mb-2">
+            <input type="text" class="form-control ing-name"   placeholder="اسم المكون">
+            <input type="text" class="form-control ing-amount" placeholder="الكمية">
+          </div>
+        </div>
+        <button type="button" id="add-ingredient" class="btn btn-outline-secondary mt-1"
+                style="font-family:Cairo;font-weight:600;border-radius:10px;border-color:var(--border)">
+          + إضافة مكون
+        </button>
+      </div>
+
+      <!-- Steps -->
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:2rem">
+        <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1.2rem;color:var(--primary)">طريقة التحضير</h3>
+        <div id="steps-container">
+          <div class="d-flex gap-2 mb-2 align-items-start">
+            <div class="step-num flex-shrink-0 mt-1">1</div>
+            <textarea class="form-control step-text" rows="2" placeholder="الخطوة الأولى..."></textarea>
+          </div>
+        </div>
+        <button type="button" id="add-step" class="btn btn-outline-secondary mt-1"
+                style="font-family:Cairo;font-weight:600;border-radius:10px;border-color:var(--border)">
+          + إضافة خطوة
+        </button>
+      </div>
+
+      <button type="submit" class="btn-primary-custom w-100" style="border-radius:16px;padding:15px;font-size:1.05rem">
+        نشر الوصفة
+      </button>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p style="font-size:1.2rem;font-weight:900;color:var(--primary)">وصفاتي العربية</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/ApiClient.js"></script>
+  <script src="/js/AuthManager.js"></script>
+  <script src="/js/RecipeManager.js"></script>
+  <script src="/js/UIManager.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
