@@ -144,9 +144,9 @@ app.js             ← page-level init, wires everything together
 
 | Name | Student ID |
 |------|------------|
-|      |            |
-|      |            |
-|      |            |
+|   Mohamed Basuwaydan   |     444000348       |
+|   Abddulrahman Alkholaifi   |    443014702        |
+
 
 ---
 
