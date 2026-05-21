@@ -7,6 +7,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const recipeRoutes = require('./routes/recipes');
+const aiRoutes = require('./routes/ai');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ─── API Routes ────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api/ai', aiRoutes);
 
 // ─── Serve HTML Pages ──────────────────────────────────────
 app.get('*.html', (req, res) => {

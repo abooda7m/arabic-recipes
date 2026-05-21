@@ -150,6 +150,63 @@ function initRegister() {
 function initAddRecipe() {
   if (!authManager.isLoggedIn) { window.location.href = '/login.html'; return; }
 
+  // AI Generate
+  const promptEl = document.getElementById('ai-prompt');
+  const generateBtn = document.getElementById('generate-ai-recipe');
+
+  generateBtn?.addEventListener('click', async () => {
+    const prompt = promptEl?.value.trim();
+    if (!prompt) {
+      ui.toast('أدخل وصفة تريدها', 'error');
+      return;
+    }
+
+    ui.showLoading();
+    try {
+      const recipe = await recipeManager.generateWithAI(prompt);
+
+      // Fill form with generated recipe
+      document.getElementById('title').value = recipe.title;
+      document.getElementById('description').value = recipe.description;
+      document.getElementById('cookTime').value = recipe.cookTime || 30;
+      document.getElementById('servings').value = recipe.servings || 4;
+      document.getElementById('image').value = recipe.image || '';
+      document.getElementById('country').value = recipe.country || '';
+      document.getElementById('category').value = recipe.category || 'أطباق رئيسية';
+
+      // Clear and refill ingredients
+      const ingContainer = document.getElementById('ingredients-container');
+      ingContainer.innerHTML = '';
+      recipe.ingredients?.forEach(ing => {
+        const row = document.createElement('div');
+        row.className = 'd-flex gap-2 mb-2';
+        row.innerHTML = `
+          <input type="text" class="form-control ing-name" value="${ing.name}">
+          <input type="text" class="form-control ing-amount" value="${ing.amount}">`;
+        ingContainer.appendChild(row);
+      });
+
+      // Clear and refill steps
+      const stepsContainer = document.getElementById('steps-container');
+      stepsContainer.innerHTML = '';
+      recipe.steps?.forEach((step, idx) => {
+        const row = document.createElement('div');
+        row.className = 'd-flex gap-2 mb-2 align-items-start';
+        row.innerHTML = `
+          <div class="step-num flex-shrink-0 mt-1">${idx + 1}</div>
+          <textarea class="form-control step-text" rows="2">${step}</textarea>`;
+        stepsContainer.appendChild(row);
+      });
+
+      ui.toast('تم توليد الوصفة! تحقق من البيانات قبل النشر', 'success');
+      promptEl.value = '';
+    } catch (err) {
+      ui.toast(err.message, 'error');
+    } finally {
+      ui.hideLoading();
+    }
+  });
+
   // Dynamic ingredient rows
   const ingContainer = document.getElementById('ingredients-container');
   document.getElementById('add-ingredient')?.addEventListener('click', () => {

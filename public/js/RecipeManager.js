@@ -53,6 +53,13 @@ class RecipeManager extends EventTarget {
     return res;
   }
 
+  async generateWithAI(prompt) {
+    const res = await this.#apiClient.post('/api/ai/generate-recipe', { prompt });
+    this.#recipes.unshift(res.data);
+    this.#emit();
+    return res.data;
+  }
+
   #emit() {
     this.dispatchEvent(
       new CustomEvent('recipesChange', {
